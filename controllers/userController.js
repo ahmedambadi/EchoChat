@@ -1,16 +1,17 @@
 const user = require("../models/usersModel");
 const pool = require("../db");
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt");
 exports.CreateUser = async (req, res) => {
     try {
-        const { userid, username, userpassword } = req.body; // fixed
+        const { username, userpassword } = req.body; // userid removed
 
-        const newuser = await user.createuser({ userid, username, userpassword }); // fixed method name
+        const newuser = await user.createuser({ username, userpassword });
         res.status(201).json(newuser);
     }
     catch(err){
-        res.status(500).json('internal server error'); // fixed
-        console.error(err); // fixed
+        res.status(500).json('internal server error');
+        console.error(err);
     }
 };
 
@@ -32,7 +33,9 @@ exports.signin = async (req, res) => {
             return;
         }
 
-        if (foundUser.userpassword !== userpassword) {
+        // Compare hashed password
+        const passwordMatch = await bcrypt.compare(userpassword, foundUser.userpassword);
+        if (!passwordMatch) {
             res.status(401).json({ error: "Incorrect password" });
             return;
         }
