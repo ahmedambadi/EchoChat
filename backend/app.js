@@ -13,4 +13,3 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-const cars = 2;
