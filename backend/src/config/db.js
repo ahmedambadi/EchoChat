@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const mongoDB = "mongodb://localhost:27017/"
+import mongoose from 'mongoose';
+const mongoDB = "mongodb://localhost:27017/";
 const connectDB = async () => {
     try {
         await mongoose.connect(mongoDB);
@@ -8,4 +8,4 @@ const connectDB = async () => {
         console.error("MongoDB connection error:", error);
     }
 };
-module.exports = connectDB;
+export default connectDB;
