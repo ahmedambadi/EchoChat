@@ -1,0 +1,32 @@
+const express = require('express');
+const app = express();
+const port = 3000;
+const http = require("http");
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }});
+io.on('connection', (socket) => {console.log(`a user of id ${socket.id} is connected`)
+    socket.emit("welcome", {
+    message: "welcome from the server",
+    id: socket.id})
+    
+    socket.on('room-join', (data) => {socket.join(data.room)
+      console.log(`user ${socket.id} joined room ${data.room} `)
+
+     socket.on("sndMsg", (data) => {
+    io.to(data.room).emit('msgRec', {message:data.message})
+     }) 
+    })
+
+    
+})
+
+
+
+server.listen(port, () => {
+    console.log(`listening on port ${port}`)
+})
