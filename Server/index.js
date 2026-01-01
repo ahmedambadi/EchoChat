@@ -1,12 +1,16 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-const port = 3000;
+const connectDB = require("./db.js")
+const port = process.env.PORT;
 const http = require("http");
 const { Server } = require("socket.io");
 const server = http.createServer(app);
+connectDB().catch(err => console.log(err));
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENTURL,
     methods: ["GET", "POST"]
   }});
 io.on('connection', (socket) => {console.log(`a user of id ${socket.id} is connected`)
@@ -30,3 +34,6 @@ io.on('connection', (socket) => {console.log(`a user of id ${socket.id} is conne
 server.listen(port, () => {
     console.log(`listening on port ${port}`)
 })
+
+
+
